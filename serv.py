@@ -53,6 +53,8 @@ class JimHTTPRequestHandler(SimpleHTTPRequestHandler):
         r.append('<body>\n<h1>%s</h1>' % title)
         r.append('<hr>\n<ul>')
         r.append('<li><a href="%s">%s</a></li>' % ('../', '../'))
+
+        files_r = []
         for name in list:
             fullname = os.path.join(path, name)
             displayname = linkname = name
@@ -60,15 +62,23 @@ class JimHTTPRequestHandler(SimpleHTTPRequestHandler):
             if os.path.isdir(fullname):
                 displayname = name + "/"
                 linkname = name + "/"
-            if os.path.islink(fullname):
-                displayname = name + "@"
-                # Note: a link to a directory displays with @ and links with /
-            r.append(
-                '<li><a href="%s">%s</a></li>' % (
-                    urllib.parse.quote(linkname, errors='surrogatepass'),
-                    html.escape(displayname, quote=False)
+                r.append(
+                    '<li><a href="%s">%s</a></li>' % (
+                        urllib.parse.quote(linkname, errors='surrogatepass'),
+                        html.escape(displayname, quote=False)
+                    )
                 )
-            )
+            else:
+                if os.path.islink(fullname):
+                    displayname = name + "@"
+                files_r.append(
+                    '<li><a href="%s">%s</a></li>' % (
+                        urllib.parse.quote(linkname, errors='surrogatepass'),
+                        html.escape(displayname, quote=False)
+                    )
+                )
+        r += files_r
+
         r.append('</ul>\n<hr>\n</body>\n</html>\n')
         encoded = '\n'.join(r).encode(enc, 'surrogateescape')
         f = io.BytesIO()
