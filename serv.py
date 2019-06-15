@@ -52,6 +52,7 @@ class JimHTTPRequestHandler(SimpleHTTPRequestHandler):
         r.append('<title>%s</title>\n</head>' % title)
         r.append('<body>\n<h1>%s</h1>' % title)
         r.append('<hr>\n<ul>')
+        r.append('<li><a href="%s">%s</a></li>' % ('../', '../'))
         for name in list:
             fullname = os.path.join(path, name)
             displayname = linkname = name
